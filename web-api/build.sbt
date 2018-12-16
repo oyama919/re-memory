@@ -7,7 +7,7 @@ version := "1.0-SNAPSHOT"
 scalaVersion := "2.12.7"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
-lazy val envConfig = settingKey[Config]("env-config")
+val conf = ConfigFactory.parseFile(new File("./conf/application.conf"))
 val circeVersion = "0.9.3"
 
 libraryDependencies ++= Seq(
@@ -27,13 +27,10 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-parser" % circeVersion
 )
 
-envConfig := {
-  val env = sys.props.getOrElse("env", "dev")
-  ConfigFactory.parseFile(file("env") / (env + ".conf"))
-}
-
-flywayLocations := envConfig.value.getStringList("flywayLocations").asScala
-flywayDriver := envConfig.value.getString("jdbcDriver")
-flywayUrl := envConfig.value.getString("jdbcUrl")
-flywayUser := envConfig.value.getString("jdbcUserName")
-flywayPassword := envConfig.value.getString("jdbcPassword")
+flywayUrl := conf.getString("db.default.url")
+flywayUser := conf.getString("db.default.user")
+flywayPassword := conf.getString("db.default.password")
+flywayDriver := conf.getString("db.default.password")
+flywayLocations := Seq(
+  "filesystem:./infra/src/main/resources/db/migration"
+)
