@@ -1,11 +1,16 @@
 # re-memory
 
 api 動作確認
+
+
  cd web-api
+
  sbt run
  
 view 動作確認
+
  cd web-view
+ 
  yarn start
  
  db設定
