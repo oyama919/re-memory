@@ -15,5 +15,5 @@
  
 ## db設定
 ### re-memory/web-api/conf/db
-　- create_db　DB作成shell　パスワードは必要な場合に設定してください
+  - create_db　DB作成shell　パスワードは必要な場合に設定してください
   - migration　マイグレーションファイル
