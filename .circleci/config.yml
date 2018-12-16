@@ -51,4 +51,11 @@ workflows:
   run_all:
     jobs:
       - web-api
+         filters:
+          branches:
+            ignore: master
       - web-view
+          filters:
+            branches:
+              ignore: master
+
