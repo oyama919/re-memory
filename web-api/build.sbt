@@ -22,12 +22,10 @@ libraryDependencies ++= Seq(
   "ch.qos.logback"         % "logback-classic"               % "1.2.3",
   "mysql"                  % "mysql-connector-java"          % "6.0.6",
   "org.flywaydb"           %% "flyway-play"                  % "4.0.0",
+  "io.circe" %% "circe-core" % circeVersion,
+  "io.circe" %% "circe-generic" % circeVersion,
+  "io.circe" %% "circe-parser" % circeVersion
 )
-libraryDependencies ++= Seq(
-  "io.circe" %% "circe-core",
-  "io.circe" %% "circe-generic",
-  "io.circe" %% "circe-parser"
-).map(_ % circeVersion)
 
 envConfig := {
   val env = sys.props.getOrElse("env", "dev")
