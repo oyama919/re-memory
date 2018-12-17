@@ -1,0 +1,54 @@
+version: 2
+jobs:
+  web-api:
+    docker:
+      - image: circleci/openjdk:8-jdk-node-browsers
+        environment:
+          TZ: /usr/share/zoneinfo/Asia/Tokyo
+          _JAVA_OPTIONS: -Xmx2G -Xms256M -Xss2M
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - sbt-cache-{{ checksum "web-api/build.sbt" }}
+            - sbt-cache-
+      - run:
+          name: Building Web-Api Project
+          working_directory: web-api
+          command: sbt test:compile
+      - save_cache:
+          name: Testing Web-Api Project
+          paths:
+            - ~/.m2
+          key: sbt-cache-{{ checksum "web-api/build.sbt" }}
+          working_directory: web-api
+      - run:
+          name: Testing Web-Api Project
+          working_directory: web-api
+          command: sbt test:test
+  web-view:
+    docker:
+      - image: circleci/node:8-stretch-browsers
+        environment:
+          TZ: /usr/share/zoneinfo/Asia/Tokyo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-cache-{{ checksum "web-view/package.json" }}
+            - npm-cache-
+      - run:
+          name: Install Local Dependencies
+          working_directory: web-view
+          command: yarn install
+      - save_cache:
+          paths:
+            - web-view/node_modules
+          key: npm-cache-{{ checksum "web-view/package.json" }}
+          command: yarn test
+workflows:
+  version: 2
+  run_all:
+    jobs:
+      - web-api
+      - web-view
