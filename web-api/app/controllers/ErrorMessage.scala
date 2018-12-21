@@ -1,7 +1,8 @@
 package controllers
 
+import io.circe.generic.auto._
 import io.circe.syntax._
 
 case class ErrorMessage(val key: String, val message: String = "") {
-  def toJson: String = ("key" -> key, "message" -> message).asJson.noSpaces
+  def toJson: String = ErrorMessage(key, message).asJson.noSpaces
 }
