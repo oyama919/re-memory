@@ -1,4 +1,5 @@
  package services
+
  import javax.inject.Singleton
  import models.User
  import scalikejdbc.{AutoSession, DBSession}

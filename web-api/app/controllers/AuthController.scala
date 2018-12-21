@@ -1,25 +1,17 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.mvc._
 import scala.concurrent.ExecutionContext
 import io.circe.generic.auto._
 import io.circe.syntax._
 import services.{AuthenticateService, UserService}
-import forms.Login
+import forms.Login.loginForm
 
 @Singleton
 class AuthController @Inject()(
   userService: UserService, authenticateService: AuthenticateService, cc: ControllerComponents)
   (implicit ec: ExecutionContext) extends AbstractController(cc) {
-    private val loginForm: Form[Login] = Form {
-      mapping(
-        "email" -> email,
-        "password" -> nonEmptyText
-      )(Login.apply)(Login.unapply)
-    }
 
     def login() = Action { implicit request =>
       loginForm.bindFromRequest.fold(

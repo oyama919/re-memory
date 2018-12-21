@@ -1,16 +1,14 @@
  package controllers
- import java.time.ZonedDateTime
 
+ import java.time.ZonedDateTime
  import javax.inject.{Inject, Singleton}
- import forms.SignUp
  import models.User
- import play.api.data.Form
- import play.api.data.Forms._
  import play.api.mvc._
  import play.api.Configuration
  import io.circe.generic.auto._
  import io.circe.syntax._
  import services.{AuthenticateService, UserService}
+ import forms.SignUp.signUpForm
 
  @Singleton
  class SignUpController @Inject()(
@@ -19,14 +17,6 @@
      components: ControllerComponents,
      config: Configuration
    ) extends AbstractController(components) {
-
-   private val signUpForm: Form[SignUp] = Form {
-     mapping(
-       "name"     -> nonEmptyText,
-       "email"    -> email,
-       "password" -> nonEmptyText
-     )(SignUp.apply)(SignUp.unapply)
-   }
 
    def signup: Action[AnyContent] = Action { implicit request =>
      signUpForm

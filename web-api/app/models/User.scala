@@ -1,4 +1,5 @@
 package models
+
 import java.time.ZonedDateTime
 import scalikejdbc._
 import skinny.orm._

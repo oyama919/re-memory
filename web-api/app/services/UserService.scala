@@ -1,4 +1,5 @@
  package services
+
  import models.{User}
  import scalikejdbc.{AutoSession, DBSession}
  import scala.util.Try
