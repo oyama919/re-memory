@@ -1,1 +1,2 @@
-GET     /                           controllers.HomeController.index
+GET     /                                       controllers.HomeController.index
+POST    /auth/login                             controllers.AuthController.login
