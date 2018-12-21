@@ -1,14 +1,13 @@
  package controllers
 
  import java.time.ZonedDateTime
+
+ import forms.SignUp.signUpForm
  import javax.inject.{Inject, Singleton}
  import models.User
- import play.api.mvc._
  import play.api.Configuration
- import io.circe.generic.auto._
- import io.circe.syntax._
+ import play.api.mvc._
  import services.{AuthenticateService, UserService}
- import forms.SignUp.signUpForm
 
  @Singleton
  class SignUpController @Inject()(
@@ -22,7 +21,7 @@
      signUpForm
        .bindFromRequest()
        .fold(
-         error => BadRequest(ErrorResponseDTO("フォームエラー", "値が不正です").asJson.noSpaces),
+         error => BadRequest(ErrorMessage("FormError", "Invalid.Value").toJson),
          {
            signup =>
            val now            = ZonedDateTime.now()
@@ -34,9 +33,9 @@
                Ok("success").withSession("user_email" -> user.email)
              }
              .recover {
-               case e: Exception => InternalServerError(ErrorResponseDTO("内部エラー", "不明なエラー").asJson.noSpaces)
+               case e: Exception => InternalServerError(ErrorMessage("InternalServerError").toJson)
              }
-             .getOrElse(InternalServerError(ErrorResponseDTO("内部エラー", "不明なエラー").asJson.noSpaces))
+             .getOrElse(InternalServerError(ErrorMessage("InternalServerError").toJson))
          })
    }
  }

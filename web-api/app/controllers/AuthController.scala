@@ -3,8 +3,6 @@ package controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import scala.concurrent.ExecutionContext
-import io.circe.generic.auto._
-import io.circe.syntax._
 import services.{AuthenticateService, UserService}
 import forms.Login.loginForm
 
@@ -16,7 +14,7 @@ class AuthController @Inject()(
     def login() = Action { implicit request =>
       loginForm.bindFromRequest.fold(
         error => {
-          BadRequest(ErrorResponseDTO("フォームエラー", "値が不正です").asJson.noSpaces)
+          BadRequest(ErrorMessage("FormError", "Invalid.Value").toJson)
         },
         login => {
           userService.findByEmail(login.email)
@@ -25,16 +23,14 @@ class AuthController @Inject()(
               isRegisteredUser match {
                 case true => Ok("success").withSession("user_email" -> login.email)
                 case false => {
-                  BadRequest(ErrorResponseDTO("認証エラー", "パスワードが間違っています").asJson.noSpaces)
+                  BadRequest(ErrorMessage("FormError", "Invalid.Password").toJson)
                 }
               }
             } recover {
-            case e: Exception => {
-              InternalServerError(ErrorResponseDTO("内部エラー", "不明なエラー").asJson.noSpaces)
-            }
+            case e: Exception => InternalServerError(ErrorMessage("InternalServerError").toJson)
           }
         }.getOrElse({
-            InternalServerError(ErrorResponseDTO("内部エラー", "不明なエラー").asJson.noSpaces)
+            InternalServerError(ErrorMessage("InternalServerError").toJson)
         }))
     }
 }
