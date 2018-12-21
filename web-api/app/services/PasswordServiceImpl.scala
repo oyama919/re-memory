@@ -2,10 +2,10 @@ package services
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
-class AuthenticateServiceImpl extends AuthenticateService {
+class PasswordServiceImpl extends PasswordService {
   private val bcrypt = new BCryptPasswordEncoder()
 
-  def authenticate(rawPassword: String, hashedPassword: String): Boolean =
+  def checkPassword(rawPassword: String, hashedPassword: String): Boolean =
     bcrypt.matches(rawPassword, hashedPassword)
 
   def hashPassword(rawPassword: String): String = bcrypt.encode(rawPassword)

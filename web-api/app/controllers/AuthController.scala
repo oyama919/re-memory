@@ -3,12 +3,12 @@ package controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import scala.concurrent.ExecutionContext
-import services.{AuthenticateService, UserService}
+import services.{PasswordService, UserService}
 import forms.Login.loginForm
 
 @Singleton
 class AuthController @Inject()(
-  userService: UserService, authenticateService: AuthenticateService, cc: ControllerComponents)
+  userService: UserService, passwordService: PasswordService, cc: ControllerComponents)
   (implicit ec: ExecutionContext) extends AbstractController(cc) {
 
     def login() = Action { implicit request =>
@@ -19,7 +19,7 @@ class AuthController @Inject()(
         login => {
           userService.findByEmail(login.email)
             .map { user =>
-              val isRegisteredUser = authenticateService.authenticate(login.password, user.get.password)
+              val isRegisteredUser = passwordService.checkPassword(login.password, user.get.password)
               isRegisteredUser match {
                 case true => Ok("success").withSession("user_email" -> login.email)
                 case false => {
