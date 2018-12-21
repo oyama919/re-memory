@@ -1,2 +1,3 @@
 GET     /                                       controllers.HomeController.index
 POST    /auth/login                             controllers.AuthController.login
+POST    /auth/signup                            controllers.SignUpController.signup

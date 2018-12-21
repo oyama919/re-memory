@@ -7,4 +7,6 @@ class AuthenticateServiceImpl extends AuthenticateService {
 
   def authenticate(rawPassword: String, hashedPassword: String): Boolean =
     bcrypt.matches(rawPassword, hashedPassword)
+
+  def hashPassword(rawPassword: String): String = bcrypt.encode(rawPassword)
 }
