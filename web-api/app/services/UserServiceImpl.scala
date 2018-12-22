@@ -7,12 +7,12 @@
 
  @Singleton
  class UserServiceImpl extends UserService {
-   def create(user: User)(implicit dbSession: DBSession = AutoSession): Try[Long] = Try {
-     User.create(user)
-   }
+   def create(user: User)(implicit dbSession: DBSession = AutoSession): Try[Long] =
+     Try { User.create(user) }
+
+   def findByName(name: String)(implicit dbSession: DBSession = AutoSession): Try[Option[User]] =
+     Try { User.where('name -> name).apply().headOption }
 
    def findByEmail(email: String)(implicit dbSession: DBSession = AutoSession): Try[Option[User]] =
-     Try {
-       User.where('email -> email).apply().headOption
-     }
+     Try { User.where('email -> email).apply().headOption }
  }
