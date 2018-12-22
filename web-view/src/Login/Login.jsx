@@ -1,12 +1,12 @@
 
 import React, { Component } from 'react';
 import axios from 'axios';
-import './App.css';
-import Greeting from './greeting';
+import './Login.css';
+import Email from './email';
 
 const API_GET = 'https://api.github.com';
 
-class App extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,7 +17,7 @@ class App extends Component {
     axios
     .get(API_GET, {})
     .then((results) => {
-      console.log(results);
+      // console.log(results);
       this.setState({
         name: 'setYuki'
       });
@@ -28,15 +28,15 @@ class App extends Component {
     });
     return (
       <div className="App">
-      <header className="App-header">
-      <Greeting name={this.state.name}/>
-      <p>
-      Edit <code>src/App.js</code> and save to reload.
-      </p>
-      </header>
+        <header className="App-header">
+          <Email name={this.state.name}/>
+          <p>
+          Edit <code>src/App.js</code> and save to reload.
+          </p>
+        </header>
       </div>
     );
   }
 }
   
-export default App;
+export default Login;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function Greeting (props) {
+function Email (props) {
   return (
     <div>
     {props.name}
@@ -9,8 +9,8 @@ function Greeting (props) {
   );
 }
 
-Greeting.propTypes = {
+Email.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
-export default Greeting;
+export default Email;
