@@ -18,25 +18,25 @@ class App extends Component {
     .get(API_GET, {})
     .then((results) => {
       console.log(results);
-        this.setState({
-          name: 'setYuki'
-        });
-      }
+      this.setState({
+        name: 'setYuki'
+      });
+    }
     )
     .catch(() => {
       console.log('通信に失敗しました');
     });
     return (
       <div className="App">
-        <header className="App-header">
-          <Greeting name={this.state.name}/>
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-        </header>
+      <header className="App-header">
+      <Greeting name={this.state.name}/>
+      <p>
+      Edit <code>src/App.js</code> and save to reload.
+      </p>
+      </header>
       </div>
     );
   }
 }
-
+  
 export default App;
