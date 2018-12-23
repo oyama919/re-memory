@@ -27,7 +27,7 @@ class DictionaryController @Inject()(
           }
           else {
             val now = ZonedDateTime.now()
-            val dictionary = Dictionary(None, create.user_id, create.title, create.content, now, now)
+            val dictionary = Dictionary(None, create.user_id, create.title, create.content, create.publish_setting, now, now)
             dictionaryService.create(dictionary)
               .map { _ => Ok("success") }
               .recover { case e: Exception => InternalServerError(ErrorMessage("InternalServerError").toJson) }

@@ -9,6 +9,7 @@ case class Dictionary(
   user_id: Long,
   title: String,
   content: String,
+  publish_setting: Boolean,
   createAt: ZonedDateTime = ZonedDateTime.now(),
   updateAt: ZonedDateTime = ZonedDateTime.now(),
   user: Option[User] = None
@@ -16,17 +17,18 @@ case class Dictionary(
 
 object Dictionary extends SkinnyCRUDMapper[Dictionary] {
   override def tableName = "dictionaries"
-  override val columns = Seq("id", "user_id", "title", "content", "create_at", "update_at")
+  override val columns = Seq("id", "user_id", "title", "content", "publish_setting", "create_at", "update_at")
   override def defaultAlias: Alias[Dictionary] = createAlias("d")
 
   belongsTo[User](User, (uf, u) => uf.copy(user = u)).byDefault
 
   private def toNamedValues(record: Dictionary): Seq[(Symbol, Any)] = Seq(
-    'user_id     -> record.user_id,
-    'title    -> record.title,
-    'content -> record.content,
-    'createAt -> record.createAt,
-    'updateAt -> record.updateAt
+    'user_id         -> record.user_id,
+    'title           -> record.title,
+    'content         -> record.content,
+    'publish_setting -> record.publish_setting,
+    'createAt        -> record.createAt,
+    'updateAt        -> record.updateAt
   )
 
   override def extract(rs: WrappedResultSet, n: scalikejdbc.ResultName[Dictionary]): Dictionary =
