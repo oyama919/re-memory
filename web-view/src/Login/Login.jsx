@@ -3,8 +3,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './Login.css';
 import Email from './email';
+let params = new URLSearchParams();
 
-const API_GET = 'https://api.github.com';
+const API_GET = 'http://localhost:9000/auth/login';
+params.append('email', 'test1@test.com');
+params.append('password', 'test');
 
 class Login extends Component {
   constructor(props) {
@@ -15,16 +18,15 @@ class Login extends Component {
   }
   render() {
     axios
-    .get(API_GET, {})
+    .post(API_GET, params )
     .then((results) => {
-      // console.log(results);
+      console.log(results);
       this.setState({
         name: 'setYuki'
       });
-    }
-    )
-    .catch(() => {
-      console.log('通信に失敗しました');
+    })
+    .catch(e => {
+      console.log(e);
     });
     return (
       <div className="App">
