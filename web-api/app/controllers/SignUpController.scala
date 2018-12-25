@@ -22,10 +22,10 @@
        .fold(
          error => BadRequest(ErrorMessage("FormError", "Invalid.Value").toJson),
          { signup =>
-           if(userService.findByEmail(signup.email).getOrElse(None) != None) {
+           if(userService.findByEmail(signup.email).getOrElse(None).isDefined) {
              BadRequest(ErrorMessage("FormError", "Exist.Email").toJson)
            }
-           else if (userService.findByName(signup.name).getOrElse(None) != None) {
+           else if (userService.findByName(signup.name).getOrElse(None).isDefined) {
              BadRequest(ErrorMessage("FormError", "Exit.Name").toJson)
            }
            else {
