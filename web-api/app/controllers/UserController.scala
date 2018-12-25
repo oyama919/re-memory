@@ -18,31 +18,46 @@ class UserController @Inject()(
  (implicit ec: ExecutionContext) extends AbstractController(cc) {
 
   def edit(userId: Long): Action[AnyContent] = Action { implicit request =>
-    editForm
-      .bindFromRequest()
-      .fold(
-        error => BadRequest(ErrorMessage("FormError", s"${error.errors}").toJson),
-        { edit =>
-          userService.findById(userId).map {
+//    request.session.get("user_id").fold { // TODO view側実装後検証
+//      Unauthorized(ErrorMessage("Unauthorized", "NotSession").toJson)
+//    }
+//    { session =>
+//      if(userId.toString.equals(session)) {
+//        Unauthorized(ErrorMessage("Unauthorized", "WrongUser").toJson)
+//      }
+      editForm
+        .bindFromRequest()
+        .fold(
+          error => BadRequest(ErrorMessage("FormError", s"${error.errors}").toJson),
+          { edit =>
+            userService.findById(userId).map {
 
-            case None => BadRequest(ErrorMessage("NotFond", "User").toJson)
+              case None => BadRequest(ErrorMessage("NotFond", "User").toJson)
 
-            case Some(user) if isDuplicateEmail(user, edit) => BadRequest(ErrorMessage("FormError", "Duplicate.Email").toJson)
+              case Some(user) if isDuplicateEmail(user, edit) => BadRequest(ErrorMessage("FormError", "Duplicate.Email").toJson)
 
-            case Some(user) if isDuplicateName(user, edit) => BadRequest(ErrorMessage("FormError", "Duplicate.Name").toJson)
+              case Some(user) if isDuplicateName(user, edit) => BadRequest(ErrorMessage("FormError", "Duplicate.Name").toJson)
 
-            case _ => {
-              val hashedPassword = passwordService.hashPassword(edit.password)
-              val user = User(Option(userId), edit.name, edit.email, hashedPassword)
-              userService.edit(user) match {
-                case Success(_) => Ok("success")
-                case Failure(e) => InternalServerError(ErrorMessage(s"$e").toJson)
+              case Some(user) if isMissMatchPassword(edit) => BadRequest(ErrorMessage("FormError", "Password.MissMatch").toJson)
+
+              case _ => {
+                val hashedPassword =
+                    edit.newPassword match {
+                      case Some(newPw) if newPw.equals(edit.confirmPassword.getOrElse(None)) =>
+                        passwordService.hashPassword(newPw)
+                      case None => passwordService.hashPassword(edit.password)
+                    }
+                val user = User(Option(userId), edit.name, edit.email, hashedPassword)
+                userService.edit(user) match {
+                  case Success(_) => Ok("success")
+                  case Failure(e) => InternalServerError(ErrorMessage(s"$e").toJson)
+                }
               }
-            }
 
-          }.getOrElse(InternalServerError(ErrorMessage("InternalServerError").toJson))
-        }
-      )
+            }.getOrElse(InternalServerError(ErrorMessage("InternalServerError").toJson))
+          }
+        )
+//    }
   }
 
   private def isDuplicateEmail(user: User, editUser: EditUser): Boolean = {
@@ -57,5 +72,9 @@ class UserController @Inject()(
       case Success(isDuplicateName) => isDuplicateName
       case Failure(e) => throw new Exception(e)
     }
+  }
+  private def isMissMatchPassword(editUser: EditUser): Boolean = {
+    editUser.newPassword.isDefined &&
+      (editUser.newPassword.get != editUser.confirmPassword.getOrElse(None))
   }
 }
