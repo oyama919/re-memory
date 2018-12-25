@@ -17,6 +17,7 @@ case class User(
    override def tableName = "users"
    override val columns = Seq("id", "name", "email", "password", "create_at", "update_at")
    override def defaultAlias: Alias[User] = createAlias("u")
+
    private def toNamedValues(record: User): Seq[(Symbol, Any)] = Seq(
      'name     -> record.name,
      'email    -> record.email,
