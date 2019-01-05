@@ -10,4 +10,6 @@ trait DictionaryTagService {
   def create(dictionary: DictionaryTag)(implicit dbSession: DBSession = AutoSession): Try[Long]
 
   def findById(id: String)(implicit dbSession: DBSession = AutoSession): Try[Option[DictionaryTag]]
+
+  def createDictionaryTags(dictionaryTags: Seq[DictionaryTag])(implicit dbSession: DBSession = AutoSession): Try[Seq[Long]]
 }

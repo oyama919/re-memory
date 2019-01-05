@@ -17,6 +17,18 @@ case class DictionaryTag(
 
 object DictionaryTag extends SkinnyCRUDMapper[DictionaryTag] {
 
+  def apply(dictionaryId: Long,
+             tagIds: Seq[Long],
+           ): Seq[DictionaryTag] =
+    for {
+      tagId <- tagIds
+    } yield {
+      new DictionaryTag(
+        dictionaryId = dictionaryId,
+        tagId = tagId
+      )
+    }
+
   lazy val dictionary = Dictionary.createAlias("d")
 
   lazy val dictionaryRef = belongsToWithAliasAndFkAndJoinCondition[Dictionary](
