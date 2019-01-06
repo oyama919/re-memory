@@ -1,15 +1,15 @@
 package controllers
 
 import forms.DictionaryForm.dictionaryForm
+import io.circe.generic.auto._
+import io.circe.syntax._
 import javax.inject.{Inject, Singleton}
-import models.DictionaryTag
+import models.{Dictionary, DictionaryTag}
 import models.exception.AlreadyRegisteredException
 import play.api.Configuration
 import play.api.mvc._
 import services.{DictionaryService, DictionaryTagService, TagService}
 import util.TryUtil
-import io.circe.generic.auto._
-import io.circe.syntax._
 
 import scala.util.{Failure, Success, Try}
 
@@ -24,17 +24,15 @@ class DictionaryController @Inject()(
 
   def show(dictionaryId: Long) = Action { implicit request =>
 
-    val maybeDictionary = dictionaryService.findById(dictionaryId).getOrElse(None)
+    val result: Try[Dictionary] = for {
+      maybeDictionary <- dictionaryService.findById(dictionaryId) //　辞書IDから辞書を取得
+      dictionary      <- dictionaryService.getDictionary(maybeDictionary) // 辞書を取り出す
+    } yield dictionary
 
-    if (!maybeDictionary.isDefined && maybeDictionary.getOrElse(None) == None) {
-      BadRequest(ErrorMessage("NotFond", "Dictionary").toJson)
-    } else if(!maybeDictionary.get.publish_setting) { // TODO sessionのユーザIDを使い自分の辞書は見れるようにする
-      BadRequest(ErrorMessage("NotPublic", "Dictionary").toJson)
-    } else {
-      val d = maybeDictionary.get
-      case class Data(id: Long, user_id: Long, title: String, content: String, publish_setting: Boolean)
-      val response = Data(d.id.getOrElse(1), d.user_id, d.title, d.content, d.publish_setting)
-      Ok(response.asJson.noSpaces)
+    result match {
+      case Success(dictionary) => Ok(dictionary.asJson.noSpaces)
+      case Failure(e: RuntimeException) => InternalServerError(ErrorMessage("InternalServerError", s"$e").toJson)
+      case Failure(e) => InternalServerError(ErrorMessage("InternalServerError",s"$e").toJson)
     }
   }
 

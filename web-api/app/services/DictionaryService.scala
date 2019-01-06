@@ -12,5 +12,8 @@ trait DictionaryService {
   def findById(dictionary_id: Long)(implicit dbSession: DBSession = AutoSession): Try[Option[Dictionary]]
 
   def findByTitle(title: String)(implicit dbSession: DBSession = AutoSession): Try[Option[Dictionary]]
+
+  def getDictionary(maybeDictionary: Option[Dictionary]): Try[Dictionary]
+
   def newDictionary(maybeNewDictionary: Option[Dictionary], dictionaryForm: DictionaryForm): Try[Dictionary]
 }

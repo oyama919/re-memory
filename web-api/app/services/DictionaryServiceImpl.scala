@@ -23,6 +23,13 @@ class DictionaryServiceImpl extends DictionaryService {
       Dictionary.where('title -> title).apply().headOption
     }
 
+  def getDictionary(maybeNewDictionary: Option[Dictionary]): Try[Dictionary] = {
+    maybeNewDictionary match {
+      case Some(dictionary) => Success(dictionary)
+      case None => Failure(new AlreadyRegisteredException("NotFound.Dictionary"))
+    }
+  }
+
   def newDictionary(maybeNewDictionary: Option[Dictionary], dictionaryForm: DictionaryForm): Try[Dictionary] = {
     maybeNewDictionary match {
       case Some(_) => Failure(new AlreadyRegisteredException("Exist.Title"))
