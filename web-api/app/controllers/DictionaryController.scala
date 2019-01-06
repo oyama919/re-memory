@@ -27,14 +27,14 @@ class DictionaryController @Inject()(
         error => BadRequest(ErrorMessage("FormError", s"${error.errors}").toJson),
         { dictionaryForm =>
 
-          val result: Try[Unit] = for {
-            maybeNewDictionary <- dictionaryService.findByTitle(dictionaryForm.title)
-            newDictionary <- dictionaryService.createNewDictionary(maybeNewDictionary, dictionaryForm)
-            newDictionaryId <- dictionaryService.create(newDictionary)
-            tagIds <- TryUtil.sequence(tagService.createTagFromForm(dictionaryForm))
-            dictionaryTags = DictionaryTag(newDictionaryId, tagIds)
-            _ <- dictionaryTagService.createDictionaryTags(dictionaryTags)
-          } yield ()
+          val result: Try[Unit] = for { // 返すものがないためUnit Successのみ判定
+            maybeExistDictionary <- dictionaryService.findByTitle(dictionaryForm.title) //　辞書をフォームのタイトルと重複した辞書があるか探してくる
+            newDictionaryObject <- dictionaryService.newDictionary(maybeExistDictionary, dictionaryForm) // 重複辞書オプションとフォームのデータを引数に辞書オブジェクトを作成
+            newDictionaryId <- dictionaryService.create(newDictionaryObject) // 辞書オブジェクトから新規辞書作成
+            tagIds <- TryUtil.sequence(tagService.createTagFromForm(dictionaryForm)) // タグid取得 タグがなければ新規作成し戻り値のidを取得 Seq[Try[T]]をTry[Seq[T]]へ変換
+            dictionaryTags = DictionaryTag(newDictionaryId, tagIds) // Seq[DictionaryTag]　タグのオブジェクトを取得
+            _ <- dictionaryTagService.createDictionaryTags(dictionaryTags) // 辞書タグテーブル保存 値は使わないため _ で省略
+          } yield () // ()単体はunit型を表す
 
           result match {
             case Success(_) => Ok("success")
