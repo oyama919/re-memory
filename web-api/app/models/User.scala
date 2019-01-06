@@ -32,6 +32,6 @@ case class User(
    def create(user: User)(implicit session: DBSession): Long =
      createWithAttributes(toNamedValues(user): _*)
 
-   def update(user: User)(implicit session: DBSession): Int =
+   def update(user: User)(implicit session: DBSession): Long =
      updateById(user.id.get).withAttributes(toNamedValues(user): _*)
  }
