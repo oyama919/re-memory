@@ -1,41 +1,41 @@
- package controllers
+package controllers
 
- import forms.SignUp.signUpForm
- import javax.inject.{Inject, Singleton}
- import models.User
- import play.api.Configuration
- import play.api.mvc._
- import services.{PasswordService, UserService}
+import forms.SignUp.signUpForm
+import javax.inject.{Inject, Singleton}
+import models.User
+import play.api.Configuration
+import play.api.mvc._
+import services.{PasswordService, UserService}
 
- @Singleton
- class SignUpController @Inject()(
-     userService: UserService,
-     passwordService: PasswordService,
-     components: ControllerComponents,
-     config: Configuration
-   ) extends AbstractController(components) {
+import scala.util.{Failure, Success, Try}
 
-   def signup: Action[AnyContent] = Action { implicit request =>
-     signUpForm
-       .bindFromRequest()
-       .fold(
-         _ => BadRequest(ErrorMessage("FormError", "Invalid.Value").toJson),
-         { signup =>
+@Singleton
+class SignUpController @Inject()(
+                                  userService: UserService,
+                                  passwordService: PasswordService,
+                                  components: ControllerComponents,
+                                  config: Configuration
+                                ) extends AbstractController(components) {
 
-           if(userService.findByEmail(signup.email).getOrElse(None).isDefined) {
-             BadRequest(ErrorMessage("FormError", "Exist.Email").toJson)
-           }
-           else if (userService.findByName(signup.name).getOrElse(None).isDefined) {
-             BadRequest(ErrorMessage("FormError", "Exit.Name").toJson)
-           }
-           else {
-             val hashedPassword = passwordService.hashPassword(signup.password)
-             val user           = User(None, signup.name, signup.email, hashedPassword)
-             userService.create(user)
-               .map { id => Ok("success").withSession("user_id" -> id.toString) }
-               .recover { case e: Exception => InternalServerError(ErrorMessage("InternalServerError").toJson) }
-               .getOrElse(InternalServerError(ErrorMessage("InternalServerError").toJson))
-           }
-         })
-   }
- }
+  def signup: Action[AnyContent] = Action { implicit request =>
+    signUpForm
+      .bindFromRequest()
+      .fold(
+        _ => BadRequest(ErrorMessage("FormError", "Invalid.Value").toJson),
+        { signUp =>
+
+          val result: Try[Long] = for {
+            isNewUser <- userService.isNewUser(signUp) if isNewUser
+            hashedPassword = passwordService.hashPassword(signUp.password)
+            user = User(None, signUp.name, signUp.email, hashedPassword)
+            userId <- userService.create(user)
+          } yield userId
+
+          result match {
+            case Success(userId) => Ok("success").withSession("user_id" -> userId.toString)
+            case Failure(e: Exception) => BadRequest(ErrorMessage(s"$e").toJson)
+            case Failure(e) => InternalServerError(ErrorMessage(s"$e").toJson)
+          }
+        })
+  }
+}
