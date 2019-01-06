@@ -1,6 +1,5 @@
  package controllers
 
- import java.time.ZonedDateTime
  import forms.SignUp.signUpForm
  import javax.inject.{Inject, Singleton}
  import models.User
@@ -20,7 +19,7 @@
      signUpForm
        .bindFromRequest()
        .fold(
-         error => BadRequest(ErrorMessage("FormError", "Invalid.Value").toJson),
+         _ => BadRequest(ErrorMessage("FormError", "Invalid.Value").toJson),
          { signup =>
 
            if(userService.findByEmail(signup.email).getOrElse(None).isDefined) {
@@ -30,9 +29,8 @@
              BadRequest(ErrorMessage("FormError", "Exit.Name").toJson)
            }
            else {
-             val now            = ZonedDateTime.now()
              val hashedPassword = passwordService.hashPassword(signup.password)
-             val user           = User(None, signup.name, signup.email, hashedPassword, now, now)
+             val user           = User(None, signup.name, signup.email, hashedPassword)
              userService.create(user)
                .map { id => Ok("success").withSession("user_id" -> id.toString) }
                .recover { case e: Exception => InternalServerError(ErrorMessage("InternalServerError").toJson) }
