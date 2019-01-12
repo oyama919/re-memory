@@ -1,8 +1,10 @@
 package controllers
 
 import forms.DictionaryForm.dictionaryForm
+import io.circe.generic.auto._
+import io.circe.syntax._
 import javax.inject.{Inject, Singleton}
-import models.DictionaryTag
+import models.{Dictionary, DictionaryTag}
 import models.exception.AlreadyRegisteredException
 import play.api.Configuration
 import play.api.mvc._
@@ -19,6 +21,20 @@ class DictionaryController @Inject()(
                                       components: ControllerComponents,
                                       config: Configuration
                                     ) extends AbstractController(components) {
+
+  def show(dictionaryId: Long) = Action { implicit request =>
+
+    val result: Try[Dictionary] = for {
+      maybeDictionary <- dictionaryService.findById(dictionaryId) //　辞書IDから辞書を取得
+      dictionary      <- dictionaryService.getDictionary(maybeDictionary) // 辞書を取り出す
+    } yield dictionary
+
+    result match {
+      case Success(dictionary) => Ok(dictionary.asJson.noSpaces)
+      case Failure(e: RuntimeException) => InternalServerError(ErrorMessage("InternalServerError", s"$e").toJson)
+      case Failure(e) => InternalServerError(ErrorMessage("InternalServerError",s"$e").toJson)
+    }
+  }
 
   def create: Action[AnyContent] = Action { implicit request =>
     dictionaryForm

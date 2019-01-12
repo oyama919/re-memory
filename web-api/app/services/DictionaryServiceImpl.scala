@@ -15,10 +15,20 @@ class DictionaryServiceImpl extends DictionaryService {
       Dictionary.create(dictionary)
     }
 
+  def findById(dictionary_id: Long)(implicit dbSession: DBSession = AutoSession): Try[Option[Dictionary]] =
+    Try { Dictionary.where('id -> dictionary_id).apply().headOption }
+
   def findByTitle(title: String)(implicit dbSession: DBSession = AutoSession): Try[Option[Dictionary]] =
     Try {
       Dictionary.where('title -> title).apply().headOption
     }
+
+  def getDictionary(maybeNewDictionary: Option[Dictionary]): Try[Dictionary] = {
+    maybeNewDictionary match {
+      case Some(dictionary) => Success(dictionary)
+      case None => Failure(new AlreadyRegisteredException("NotFound.Dictionary"))
+    }
+  }
 
   def newDictionary(maybeNewDictionary: Option[Dictionary], dictionaryForm: DictionaryForm): Try[Dictionary] = {
     maybeNewDictionary match {

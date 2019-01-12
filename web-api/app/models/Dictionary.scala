@@ -1,6 +1,7 @@
 package models
 
 import java.time.ZonedDateTime
+import io.circe.{ Encoder, Json}
 import scalikejdbc._
 import skinny.orm._
 
@@ -16,6 +17,27 @@ case class Dictionary(
 )
 
 object Dictionary extends SkinnyCRUDMapper[Dictionary] {
+
+  implicit object EncodeDictionary extends Encoder[Dictionary] {
+    final def apply(d:Dictionary):Json = Json.obj(
+      ("id",Json.fromLong(d.id.get)),
+      ("user_id",Json.fromLong(d.user_id)),
+      ("title",Json.fromString(d.title)),
+      ("content",Json.fromString(d.content)),
+      ("publish_setting",Json.fromBoolean(d.publish_setting)),
+      ("createAt",Json.fromString(d.createAt.toString)),
+      ("updateAt",Json.fromString(d.updateAt.toString)),
+      ("user",Json.obj(
+        ("id",Json.fromLong(d.user.get.id.get)),
+        ("name",Json.fromString(d.user.get.name)),
+        ("email",Json.fromString(d.user.get.email)),
+//        ("password",Json.fromString(d.user.get.password)),
+//        ("createAt",Json.fromString(d.user.get.createAt.toString)),
+//        ("updateAt",Json.fromString(d.user.get.updateAt.toString))
+      ))
+    )
+  }
+
   override def tableName = "dictionaries"
   override val columns = Seq("id", "user_id", "title", "content", "publish_setting", "create_at", "update_at")
   override def defaultAlias: Alias[Dictionary] = createAlias("d")

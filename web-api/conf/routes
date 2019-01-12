@@ -1,2 +1,3 @@
-GET     /                           controllers.HomeController.index
-POST    /dictionary/create          controllers.DictionaryController.create
+GET     /                                controllers.HomeController.index
+GET     /dictionary/:dictionaryId/show   controllers.DictionaryController.show(dictionaryId: Long)
+POST    /dictionary/create               controllers.DictionaryController.create
