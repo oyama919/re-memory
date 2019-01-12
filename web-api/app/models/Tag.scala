@@ -24,8 +24,10 @@ object Tag extends SkinnyCRUDMapper[Tag] {
 
   override def extract(rs: WrappedResultSet, n: scalikejdbc.ResultName[Tag]): Tag =
     autoConstruct(rs, n)
+
   def create(tag: Tag)(implicit session: DBSession): Long =
     createWithAttributes(toNamedValues(tag): _*)
+
   def update(tag: Tag)(implicit session: DBSession): Int =
     updateById(tag.id.get).withAttributes(toNamedValues(tag): _*)
 }

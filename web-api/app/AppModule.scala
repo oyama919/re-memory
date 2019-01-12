@@ -6,5 +6,7 @@ class AppModule extends AbstractModule {
     bind(classOf[DictionaryService]).to(classOf[DictionaryServiceImpl])
     bind(classOf[TagService]).to(classOf[TagServiceImpl])
     bind(classOf[DictionaryTagService]).to(classOf[DictionaryTagServiceImpl])
+    bind(classOf[UserService]).to(classOf[UserServiceImpl])
+    bind(classOf[PasswordService]).to(classOf[PasswordServiceImpl])
   }
 }

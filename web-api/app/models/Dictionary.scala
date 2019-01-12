@@ -55,8 +55,10 @@ object Dictionary extends SkinnyCRUDMapper[Dictionary] {
 
   override def extract(rs: WrappedResultSet, n: scalikejdbc.ResultName[Dictionary]): Dictionary =
     autoConstruct(rs, n, "user")
+
   def create(dictionary: Dictionary)(implicit session: DBSession): Long =
     createWithAttributes(toNamedValues(dictionary): _*)
+
   def update(dictionary: Dictionary)(implicit session: DBSession): Int =
     updateById(dictionary.id.get).withAttributes(toNamedValues(dictionary): _*)
 }
