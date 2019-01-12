@@ -2,10 +2,10 @@ package services
 
 import forms.SignUp
 import javax.inject.Singleton
+import models.User
 import scalikejdbc.{AutoSession, DBSession}
 
 import scala.util.{Failure, Success, Try}
-import models.User
 
 @Singleton
 class UserServiceImpl extends UserService {

@@ -11,11 +11,11 @@ import scala.util.{Failure, Success, Try}
 
 @Singleton
 class SignUpController @Inject()(
-                                  userService: UserService,
-                                  passwordService: PasswordService,
-                                  components: ControllerComponents,
-                                  config: Configuration
-                                ) extends AbstractController(components) {
+  userService: UserService,
+  passwordService: PasswordService,
+  components: ControllerComponents,
+  config: Configuration
+) extends AbstractController(components) {
 
   def signup: Action[AnyContent] = Action { implicit request =>
     signUpForm
