@@ -1,6 +1,7 @@
 package models
 
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 import io.circe.{Encoder, Json}
 import scalikejdbc._
@@ -19,6 +20,8 @@ case class Dictionary(
 
 object Dictionary extends SkinnyCRUDMapper[Dictionary] {
 
+  val f = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+
   implicit object EncodeDictionary extends Encoder[Dictionary] {
     final def apply(d: Dictionary): Json = Json.obj(
       ("id", Json.fromLong(d.id.get)),
@@ -26,8 +29,8 @@ object Dictionary extends SkinnyCRUDMapper[Dictionary] {
       ("title", Json.fromString(d.title)),
       ("content", Json.fromString(d.content)),
       ("publish_setting", Json.fromBoolean(d.publish_setting)),
-      ("createAt", Json.fromString(d.createAt.toString)),
-      ("updateAt", Json.fromString(d.updateAt.toString)),
+      ("createAt", Json.fromString(d.createAt.format(f))),
+      ("updateAt", Json.fromString(d.updateAt.format(f))),
       ("user",
         Json.obj(
           ("id", Json.fromLong(d.user.get.id.get)),
