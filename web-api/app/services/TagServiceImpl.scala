@@ -22,14 +22,14 @@ class TagServiceImpl extends TagService {
     Tag.where('title -> title).apply().headOption
   }
 
-  override def createTag(maybeTag:Option[Tag],formTag:String):Try[Long] = {
+  override def createTag(maybeTag: Option[Tag], formTag: String): Try[Long] = {
     maybeTag match {
       case Some(tag) => Success(tag.id.get)
       case None => create(Tag(title = formTag))
     }
   }
 
-  override def createTagFromForm(dictionaryForm:DictionaryForm):Seq[Try[Long]] = {
+  override def createTagFromForm(dictionaryForm: DictionaryForm): Seq[Try[Long]] = {
     dictionaryForm.tags.map(tag => findByTitle(tag)
       .flatMap(t => createTag(t, tag)))
   }

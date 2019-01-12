@@ -16,6 +16,6 @@ trait TagService {
 
   def createTag(maybeTag: Option[Tag], formTag: String): Try[Long]
 
-  def createTagFromForm(dictionaryForm:DictionaryForm):Seq[Try[Long]]
+  def createTagFromForm(dictionaryForm: DictionaryForm): Seq[Try[Long]]
 
 }

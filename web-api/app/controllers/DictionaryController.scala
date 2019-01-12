@@ -1,11 +1,10 @@
 package controllers
 
 import forms.DictionaryForm.dictionaryForm
-import io.circe.generic.auto._
 import io.circe.syntax._
 import javax.inject.{Inject, Singleton}
-import models.{Dictionary, DictionaryTag}
 import models.exception.AlreadyRegisteredException
+import models.{Dictionary, DictionaryTag}
 import play.api.Configuration
 import play.api.mvc._
 import services.{DictionaryService, DictionaryTagService, TagService}
@@ -15,24 +14,24 @@ import scala.util.{Failure, Success, Try}
 
 @Singleton
 class DictionaryController @Inject()(
-                                      dictionaryService: DictionaryService,
-                                      tagService: TagService,
-                                      dictionaryTagService: DictionaryTagService,
-                                      components: ControllerComponents,
-                                      config: Configuration
-                                    ) extends AbstractController(components) {
+  dictionaryService: DictionaryService,
+  tagService: TagService,
+  dictionaryTagService: DictionaryTagService,
+  components: ControllerComponents,
+  config: Configuration
+) extends AbstractController(components) {
 
   def show(dictionaryId: Long) = Action { implicit request =>
 
     val result: Try[Dictionary] = for {
       maybeDictionary <- dictionaryService.findById(dictionaryId) //　辞書IDから辞書を取得
-      dictionary      <- dictionaryService.getDictionary(maybeDictionary) // 辞書を取り出す
+      dictionary <- dictionaryService.getDictionary(maybeDictionary) // 辞書を取り出す
     } yield dictionary
 
     result match {
       case Success(dictionary) => Ok(dictionary.asJson.noSpaces)
       case Failure(e: RuntimeException) => InternalServerError(ErrorMessage("InternalServerError", s"$e").toJson)
-      case Failure(e) => InternalServerError(ErrorMessage("InternalServerError",s"$e").toJson)
+      case Failure(e) => InternalServerError(ErrorMessage("InternalServerError", s"$e").toJson)
     }
   }
 
@@ -56,7 +55,7 @@ class DictionaryController @Inject()(
             case Success(_) => Ok("success")
             case Failure(e: AlreadyRegisteredException) => BadRequest(ErrorMessage("FormError", s"$e").toJson)
             case Failure(e: RuntimeException) => InternalServerError(ErrorMessage("InternalServerError", s"$e").toJson)
-            case Failure(e) => InternalServerError(ErrorMessage("InternalServerError",s"$e").toJson)
+            case Failure(e) => InternalServerError(ErrorMessage("InternalServerError", s"$e").toJson)
           }
         })
   }

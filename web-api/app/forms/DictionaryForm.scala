@@ -8,11 +8,11 @@ case class DictionaryForm(user_id: Long, title: String, content: String, publish
 object DictionaryForm {
   val dictionaryForm: Form[DictionaryForm] = Form {
     mapping(
-      "user_id"           -> longNumber,
-      "title"             -> nonEmptyText,
-      "content"           -> nonEmptyText,
-      "publish_setting"   -> boolean,
-      "tags"              -> seq(text)
+      "user_id" -> longNumber,
+      "title" -> nonEmptyText,
+      "content" -> nonEmptyText,
+      "publish_setting" -> boolean,
+      "tags" -> seq(text)
     )(DictionaryForm.apply)(DictionaryForm.unapply)
   }
 }

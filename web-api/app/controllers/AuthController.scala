@@ -1,10 +1,11 @@
 package controllers
 
+import forms.Login.loginForm
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
-import scala.concurrent.ExecutionContext
 import services.{PasswordService, UserService}
-import forms.Login.loginForm
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class AuthController @Inject()(
@@ -26,7 +27,9 @@ class AuthController @Inject()(
                 }
             }
           } recover { case e: Exception => InternalServerError(ErrorMessage("InternalServerError").toJson) }
-      }.getOrElse({ InternalServerError(ErrorMessage("InternalServerError").toJson) })
+      }.getOrElse({
+        InternalServerError(ErrorMessage("InternalServerError").toJson)
+      })
     )
   }
 }
