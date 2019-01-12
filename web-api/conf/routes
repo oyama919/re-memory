@@ -1,1 +1,4 @@
-GET     /                           controllers.HomeController.index
+GET     /                                       controllers.HomeController.index
+POST    /signup                                 controllers.SignUpController.signup
+POST    /login                                  controllers.AuthController.login
+PUT     /user/:id                               controllers.UserController.edit(id: Long)
