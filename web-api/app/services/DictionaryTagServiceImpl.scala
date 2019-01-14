@@ -17,7 +17,16 @@ class DictionaryTagServiceImpl extends DictionaryTagService {
     DictionaryTag.where('id -> id).apply().headOption
   }
 
+  def findByDictionaryId(dictionaryId: String)(implicit dbSession: DBSession = AutoSession): Try[List[DictionaryTag]] = Try {
+    DictionaryTag.where('dictionary_id -> dictionaryId).apply()
+  }
+
   override def createDictionaryTags(dictionaryTags: Seq[DictionaryTag])(implicit dbSession: DBSession = AutoSession): Try[Seq[Long]] = Try {
+    dictionaryTags.map(dictionaryTag => DictionaryTag.create(dictionaryTag))
+  }
+
+  override def editDictionaryTags(dictionaryTags: Seq[DictionaryTag], existsDictionaryTags: Seq[DictionaryTag])(implicit dbSession: DBSession = AutoSession): Try[Seq[Long]] = Try {
+    existsDictionaryTags.map(existsDictionaryTag => DictionaryTag.delete(existsDictionaryTag))
     dictionaryTags.map(dictionaryTag => DictionaryTag.create(dictionaryTag))
   }
 }

@@ -59,4 +59,33 @@ class DictionaryController @Inject()(
           }
         })
   }
+
+  def edit(dictionaryId: Long) = Action { implicit request =>
+
+    dictionaryForm
+      .bindFromRequest()
+      .fold(
+        error => BadRequest(ErrorMessage("FormError", s"${error.errors}").toJson),
+        { dictionaryForm =>
+
+          val result: Try[Unit] = for { // 返すものがないためUnit Successのみ判定
+            maybeExistDictionary <- dictionaryService.findByTitle(dictionaryForm.title) //　辞書をフォームのタイトルと重複した辞書があるか探してくる
+            maybeDictionary <- dictionaryService.findById(dictionaryId) //　辞書をフォームのタイトルと重複した辞書があるか探してくる
+            editDictionaryObject <- dictionaryService.editDictionary(maybeExistDictionary, maybeDictionary, dictionaryForm, dictionaryId) // 重複辞書オプションと更新前の辞書、フォームのデータを引数に辞書オブジェクトを作成
+            _ <- dictionaryService.edit(editDictionaryObject) // 辞書オブジェクトから辞書更新
+            tagIds <- TryUtil.sequence(tagService.createTagFromForm(dictionaryForm)) // タグid取得 タグがなければ新規作成し戻り値のidを取得 Seq[Try[T]]をTry[Seq[T]]へ変換
+            dictionaryTags = DictionaryTag(dictionaryId, tagIds) // Seq[DictionaryTag]　タグのオブジェクトを取得
+            existsDictionaryTags <- dictionaryTagService.findByDictionaryId(dictionaryId.toString) // List[DictionaryTag]　既存タグを取得
+            _ <- dictionaryTagService.editDictionaryTags(dictionaryTags, existsDictionaryTags) // 辞書タグテーブル保存 値は使わないため _ で省略
+          } yield () // ()単体はunit型を表す
+
+          result match {
+            case Success(_) => Ok("success")
+            case Failure(e: AlreadyRegisteredException) => BadRequest(ErrorMessage("FormError", s"$e").toJson)
+            case Failure(e: RuntimeException) => InternalServerError(ErrorMessage("InternalServerError", s"$e").toJson)
+            case Failure(e) => InternalServerError(ErrorMessage("InternalServerError", s"$e").toJson)
+          }
+        }
+      )
+  }
 }

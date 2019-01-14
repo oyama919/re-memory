@@ -11,5 +11,9 @@ trait DictionaryTagService {
 
   def findById(id: String)(implicit dbSession: DBSession = AutoSession): Try[Option[DictionaryTag]]
 
+  def findByDictionaryId(dictionaryId: String)(implicit dbSession: DBSession = AutoSession): Try[List[DictionaryTag]]
+
   def createDictionaryTags(dictionaryTags: Seq[DictionaryTag])(implicit dbSession: DBSession = AutoSession): Try[Seq[Long]]
+
+  def editDictionaryTags(dictionaryTags: Seq[DictionaryTag], existsDictionaryTags: Seq[DictionaryTag])(implicit dbSession: DBSession = AutoSession): Try[Seq[Long]]
 }

@@ -10,12 +10,20 @@ import scala.util.{Failure, Success, Try}
 
 @Singleton
 class DictionaryServiceImpl extends DictionaryService {
-  def create(dictionary: Dictionary)(implicit dbSession: DBSession = AutoSession): Try[Long] =
+  def create(dictionary: Dictionary)(
+      implicit dbSession: DBSession = AutoSession): Try[Long] =
     Try {
       Dictionary.create(dictionary)
     }
 
-  def findById(dictionary_id: Long)(implicit dbSession: DBSession = AutoSession): Try[Option[Dictionary]] =
+  def edit(dictionary: Dictionary)(
+      implicit dbSession: DBSession = AutoSession): Try[Int] =
+    Try {
+      Dictionary.update(dictionary)
+    }
+
+  def findById(dictionary_id: Long)(
+      implicit dbSession: DBSession = AutoSession): Try[Option[Dictionary]] =
     Try {
       Dictionary.where('id -> dictionary_id).apply().headOption
     }
@@ -36,7 +44,29 @@ class DictionaryServiceImpl extends DictionaryService {
     maybeNewDictionary match {
       case Some(_) => Failure(new AlreadyRegisteredException("Exist.Title"))
       case None =>
-        Success(Dictionary(None, dictionaryForm.user_id, dictionaryForm.title, dictionaryForm.content, dictionaryForm.publish_setting))
+        Success(
+          Dictionary(None,
+                     dictionaryForm.user_id,
+                     dictionaryForm.title,
+                     dictionaryForm.content,
+                     dictionaryForm.publish_setting))
+    }
+  }
+
+  def editDictionary(maybeNewDictionary: Option[Dictionary],
+                     maybeDictionary: Option[Dictionary],
+                     dictionaryForm: DictionaryForm,
+                     dictionaryId: Long): Try[Dictionary] = {
+    maybeNewDictionary match {
+      case Some(d) if d != maybeDictionary.getOrElse(None) =>
+        Failure(new AlreadyRegisteredException("Exist.Title"))
+      case Some(_) | None =>
+        Success(
+          Dictionary(Option(dictionaryId),
+                     dictionaryForm.user_id,
+                     dictionaryForm.title,
+                     dictionaryForm.content,
+                     dictionaryForm.publish_setting))
     }
   }
 }
