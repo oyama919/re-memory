@@ -1,1 +1,6 @@
-GET     /                           controllers.HomeController.index
+GET     /                                       controllers.HomeController.index
+POST    /signup                                 controllers.SignUpController.signup
+POST    /login                                  controllers.AuthController.login
+PUT     /user/:id                               controllers.UserController.edit(id: Long)
+GET     /dictionary/:dictionaryId/show          controllers.DictionaryController.show(dictionaryId: Long)
+POST    /dictionary/create                      controllers.DictionaryController.create

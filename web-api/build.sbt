@@ -1,4 +1,4 @@
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigFactory
 import scala.collection.JavaConverters._
 
 name := """re-memory"""
@@ -18,19 +18,19 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc"        %% "scalikejdbc-jsr310"           % "2.5.2",
   "org.scalikejdbc"        %% "scalikejdbc-test"             % "2.5.2" % Test,
   "org.scalikejdbc"        %% "scalikejdbc-play-initializer" % "2.6.+",
+  "org.scalikejdbc" %% "scalikejdbc-syntax-support-macro" % "3.3.1",
   "org.skinny-framework"   %% "skinny-orm"                   % "2.3.7",
   "ch.qos.logback"         % "logback-classic"               % "1.2.3",
   "mysql"                  % "mysql-connector-java"          % "6.0.6",
   "org.flywaydb"           %% "flyway-play"                  % "4.0.0",
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
-  "io.circe" %% "circe-parser" % circeVersion
+  "io.circe" %% "circe-parser" % circeVersion,
+  "org.springframework.security" % "spring-security-web" % "4.1.3.RELEASE"
 )
 
 flywayUrl := conf.getString("db.default.url")
 flywayUser := conf.getString("db.default.user")
 flywayPassword := conf.getString("db.default.password")
-flywayDriver := conf.getString("db.default.password")
-flywayLocations := Seq(
-  "filesystem:./infra/src/main/resources/db/migration"
-)
+flywayDriver := conf.getString("db.default.driver")
+flywayLocations := conf.getStringList("db.default.locations").asScala
