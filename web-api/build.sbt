@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc-syntax-support-macro" % "3.3.1",
   "org.skinny-framework"   %% "skinny-orm"                   % "2.3.7",
   "ch.qos.logback"         % "logback-classic"               % "1.2.3",
-  "mysql"                  % "mysql-connector-java"          % "6.0.6",
+  "mysql"                  % "mysql-connector-java"          % "8.0.8-dmr",
   "org.flywaydb"           %% "flyway-play"                  % "4.0.0",
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
