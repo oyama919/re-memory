@@ -1,7 +1,7 @@
 package services
 
 trait PasswordService {
-  def checkPassword(rawPassword: String, hashedPassword: String): Boolean
+  def checkPassword(requestPassword: String, hashedPassword: String): Boolean
 
-  def hashPassword(rawPassword: String): String
+  def hashPassword(requestPassword: String): String
 }
