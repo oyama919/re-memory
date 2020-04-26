@@ -5,7 +5,7 @@ import './Login.css';
 import Email from './email';
 let params = new URLSearchParams();
 
-const API_GET = 'http://localhost:9000/auth/login';
+const url = 'http://localhost:9000/auth/login';
 params.append('email', 'test1@test.com');
 params.append('password', 'test');
 
@@ -13,21 +13,11 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: ''
+      name: 'でふぉると'
     };
   }
   render() {
-    axios
-    .post(API_GET, params )
-    .then((results) => {
-      console.log(results);
-      this.setState({
-        name: 'setYuki'
-      });
-    })
-    .catch(e => {
-      console.log(e);
-    });
+    this.set()
     return (
       <div className="App">
         <header className="App-header">
@@ -38,6 +28,13 @@ class Login extends Component {
         </header>
       </div>
     );
+  }
+  async set() {
+    const data = await axios.post(url, params).data
+    console.log(data)
+    // this.setState({
+    //   name: 'setYuki'
+    // });
   }
 }
   
