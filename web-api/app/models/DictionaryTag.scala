@@ -57,7 +57,11 @@ object DictionaryTag extends SkinnyCRUDMapper[DictionaryTag] {
     createWithAttributes(toNamedValues(dictionary_tags): _*)
 
   def update(dictionary_tags: DictionaryTag)(implicit session: DBSession): Int =
-    updateById(dictionary_tags.id.get).withAttributes(toNamedValues(dictionary_tags): _*)
+    updateById(dictionary_tags.id.get)
+      .withAttributes(toNamedValues(dictionary_tags): _*)
+
+  def delete(dictionary_tags: DictionaryTag)(implicit session: DBSession): Int =
+    deleteById(dictionary_tags.id.get)
 
   private def toNamedValues(record: DictionaryTag): Seq[(Symbol, Any)] = Seq(
     'dictionary_id -> record.dictionaryId,

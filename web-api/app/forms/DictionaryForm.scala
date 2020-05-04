@@ -16,4 +16,3 @@ object DictionaryForm {
     )(DictionaryForm.apply)(DictionaryForm.unapply)
   }
 }
-
