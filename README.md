@@ -1,19 +1,82 @@
-# re-memory
+# 環境構築
 
-## api 動作確認
+## フロントエンド
+
+## node.js
+
+Node js インストール
+
+```brew install node```
+
+フロントエンドプロジェクトへフォルダ移動
+
+```cd frontend```
+
+ライブラリインストール
 
 
- cd web-api
+```yarn install```
 
- sbt run
- 
-## view 動作確認
+起動
 
- cd web-view
- 
- yarn start
- 
-## db設定
-### re-memory/web-api/conf/db
-  - create_db　DB作成shell　パスワードは必要な場合に設定してください
-  - migration　マイグレーションファイル
+```yarn start```
+
+## バックエンド
+
+### Java8
+
+インストール
+
+```brew cask install homebrew/cask-versions/adoptopenjdk8```
+
+~/.zprofileに下記の行を追加し、パスを設定する
+
+```
+export JAVA_HOME=`/usr/libexec/java_home -v "1.8"`
+PATH=${JAVA_HOME}/bin:${PATH}
+```
+
+パスを更新する
+
+```
+source ~/.zprofile
+```
+
+参考記事：https://qiita.com/d_forest/items/290bb05bb929e5d74647
+
+### scalar
+
+インストール
+
+```brew install sbt```
+
+バックエンドプロジェクトへフォルダ移動
+
+```cd backend```
+
+起動
+
+```sbt run```
+
+### データベース docker
+
+Dockerインストール
+
+```brew cask install docker```
+
+Mysqlインストール
+
+```brew install mysql```
+
+起動
+
+```docker-compose up```
+
+プロジェクト配下で下記のコマンドを叩き、データベースを初期化する。
+
+```sh initial-data.sh ```
+
+パスワードの入力が求められたらrootと入力
+
+```pasword:_ #root ```
+
