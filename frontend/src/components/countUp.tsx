@@ -4,9 +4,7 @@ import { countUpAction } from "../actions";
 import { Action, Dispatch } from "redux";
 import store from '../states/index';
 
-const mapStateToProps = (state: store): store["countUp"] => ({
-  count: state.countUp
-});
+const mapStateToProps = (state: store): {count: number} => (state.countUp);
 
 interface DispatchToProps {
   countUpEvent: () => void;
