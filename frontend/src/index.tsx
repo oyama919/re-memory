@@ -2,9 +2,10 @@ import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { createStore,applyMiddleware,compose, } from "redux";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import logger from 'redux-logger'
 import rootReducer from "./reducers";
-import { CountUp } from "./components/index";
+import { Layout, Login, CountUp } from "./components/index";
 
 interface ExtendedWindow extends Window {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
@@ -19,7 +20,12 @@ const store = createStore(rootReducer,
 
 render(
   <Provider store={store}>
-    <CountUp />
+     <Router>
+      <Layout>
+        <Route exact path="/" component={CountUp}></Route>
+        <Route path="/login" component={Login}></Route>
+      </Layout>
+    </Router>
   </Provider>,
   document.getElementById("root")
 );
