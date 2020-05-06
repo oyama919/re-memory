@@ -1,7 +1,11 @@
-import { countUp } from "./countUp";
-
-interface store {
-    countUp
+namespace Store {
+    export interface CountUp {
+        count: number;
+      }
 }
 
-export default store
+interface Store {
+    countUp: Store.CountUp ;
+}
+
+export default Store

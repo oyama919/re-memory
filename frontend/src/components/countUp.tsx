@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from "react-redux";
 import { countUpAction } from "../actions";
 import { Action, Dispatch } from "redux";
-import store from '../states/index';
+import Store from '../states/index';
 
-const mapStateToProps = (state: store): {count: number} => (state.countUp);
+const mapStateToProps = (state: Store): Store.CountUp => (state.countUp);
 
 interface DispatchToProps {
   countUpEvent: () => void;
