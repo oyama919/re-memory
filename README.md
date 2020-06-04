@@ -44,7 +44,7 @@ source ~/.zprofile
 
 参考記事：https://qiita.com/d_forest/items/290bb05bb929e5d74647
 
-### scalar
+### scala
 
 インストール
 
